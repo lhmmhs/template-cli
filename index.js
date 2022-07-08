@@ -5,16 +5,6 @@ const fs = require("node:fs");
 const path = require("node:path");
 const minimist = require("minimist");
 const prompts = require("prompts");
-const {
-  blue,
-  cyan,
-  green,
-  lightRed,
-  magenta,
-  red,
-  reset,
-  yellow,
-} = require("kolorist");
 
 const cwd = process.cwd();
 const questions = [];

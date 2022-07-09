@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
-const fs = require("node:fs");
-const path = require("node:path");
-const minimist = require("minimist");
-const prompts = require("prompts");
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import prompts from "prompts";
+import { yellow, red } from "kolorist";
 
 const cwd = process.cwd();
 
@@ -36,7 +37,11 @@ const isValidPackageName = (projectName) => {
 const run = async () => {
   const defaultProjectName = "vue-app";
   const templateDir = "template";
-  const root = path.join(cwd, templateDir);
+  const templatePath = path.join(
+    fileURLToPath(import.meta.url),
+    "..",
+    templateDir
+  );
 
   const questions = [
     {
@@ -48,10 +53,10 @@ const run = async () => {
     },
   ];
 
-  const { name = defaultProjectName } = await prompts(questions);
+  const { name } = await prompts(questions);
 
   const write = (file, content) => {
-    const targetPath = path.join(root, file);
+    const targetPath = path.join(templatePath, file);
     const destPath = path.join(cwd, name, file);
 
     if (content) {
@@ -62,17 +67,21 @@ const run = async () => {
   };
 
   const destRoot = path.join(cwd, name);
-  if (!fs.existsSync(destRoot)) {
+
+  if (fs.existsSync(destRoot)) {
+    console.log(yellow(`${name} already exists.`));
+    return;
+  } else {
     fs.mkdirSync(destRoot);
   }
 
-  const files = fs.readdirSync(root);
+  const files = fs.readdirSync(templatePath);
   for (const file of files.filter((file) => file !== "package.json")) {
     write(file);
   }
 
   const pkg = JSON.parse(
-    fs.readFileSync(path.join(root, "package.json"), "utf-8")
+    fs.readFileSync(path.join(templatePath, "package.json"), "utf-8")
   );
 
   // package.json name

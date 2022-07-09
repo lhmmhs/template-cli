@@ -1,6 +1,7 @@
 {
   "name": "cli",
   "version": "1.0.0",
+  "type": "module",
   "description": "cli",
   "main": "index.js",
   "author": "lhmmhs",
@@ -10,5 +11,8 @@
     "kolorist": "^1.5.1",
     "minimist": "^1.2.6",
     "prompts": "^2.4.2"
+  },
+  "bin": {
+    "cli": "index.js"
   }
 }
